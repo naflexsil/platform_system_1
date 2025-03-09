@@ -9,35 +9,31 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-// Регистрация пользователя
 router.post("/register", (req, res) => {
   register(req, res).catch((error) => {
-    console.error("Error in register route:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Ошибка в маршруте регистрации:", error);
+    res.status(500).json({ message: "Внутренняя ошибка сервера" });
   });
 });
 
-// Авторизация пользователя
 router.post("/login", (req, res) => {
   login(req, res).catch((error) => {
-    console.error("Error in login route:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Ошибка в маршруте логина:", error);
+    res.status(500).json({ message: "Внутренняя ошибка сервера" });
   });
 });
 
-// Получение данных о текущем пользователе (требуется аутентификация)
 router.get("/me", authMiddleware, (req, res) => {
   getMe(req, res).catch((error) => {
-    console.error("Error in getMe route:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Ошибка в маршруте getMe:", error);
+    res.status(500).json({ message: "Внутренняя ошибка сервера" });
   });
 });
 
-// Удаление пользователя (требуется аутентификация)
 router.delete("/delete", authMiddleware, (req, res) => {
   deleteUser(req, res).catch((error) => {
-    console.error("Error in deleteUser route:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Ошибка в маршруте удаления пользователя:", error);
+    res.status(500).json({ message: "Внутренняя ошибка сервера" });
   });
 });
 

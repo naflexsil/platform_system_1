@@ -1,15 +1,13 @@
 import mongoose from "mongoose";
 
-// Функция для подключения к MongoDB
 export const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI!, {
-      // Опции подключения (опционально)
-      serverSelectionTimeoutMS: 5000, // Таймаут подключения
+      serverSelectionTimeoutMS: 5000,
     });
-    console.log("MongoDB connected successfully");
+    console.log("МонгоДБ успешно подкючен");
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    process.exit(1); // Завершение процесса в случае ошибки
+    console.error("ошибка при подключении МонгоДБ:", error);
+    process.exit(1);
   }
 };

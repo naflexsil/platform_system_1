@@ -3,7 +3,12 @@ import { ping } from "../controllers/pingController";
 
 const router = express.Router();
 
-// Маршрут для проверки работоспособности сервера
-router.get("/ping", ping);
+router.get("/ping", async (req, res) => {
+  try {
+    await ping(req, res);
+  } catch (error: unknown) {
+    console.error("Ошибка в маршруте ping:", error);
+  }
+});
 
 export default router;

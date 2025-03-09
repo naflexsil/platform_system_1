@@ -10,7 +10,7 @@ export const authMiddleware = (
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    res.status(401).json({ message: "No token provided" });
+    res.status(401).json({ message: "Токен не предоставлен" });
     return;
   }
 
@@ -21,6 +21,6 @@ export const authMiddleware = (
     req.user = { userId: new Types.ObjectId(decoded.userId) };
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Неверный токен" });
   }
 };
