@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/app.ts"
+    "dev": "nodemon --exec ts-node --files --transpileOnly src/app.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

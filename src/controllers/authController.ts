@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Types } from "mongoose";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 
+interface JwtPayload {
+  userId: string;
+}
+
 export const authMiddleware = (
   req: Request,
   res: Response,
@@ -15,12 +19,10 @@ export const authMiddleware = (
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: string;
-    };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     req.user = { userId: new Types.ObjectId(decoded.userId) };
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({ message: "Неверный токен" });
   }
 };
