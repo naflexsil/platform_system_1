@@ -9,32 +9,41 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.post("/register", (req: Request, res: Response) => {
-  register(req, res).catch((error) => {
-    console.error("Ошибка в маршруте регистрации:", error);
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  });
-});
-
-router.post("/login", (req: Request, res: Response) => {
-  login(req, res).catch((error) => {
-    console.error("Ошибка в маршруте логина:", error);
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  });
-});
-
-router.get("/me", authMiddleware, (req: Request, res: Response) => {
-  getMe(req, res).catch((error) => {
-    console.error("Ошибка в маршруте getMe:", error);
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  });
-});
-
-router.delete("/delete", authMiddleware, (req: Request, res: Response) => {
-  deleteUser(req, res).catch((error) => {
-    console.error("Ошибка в маршруте удаления пользователя:", error);
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  });
-});
+router.post("/register", register);
+router.post("/login", login);
+router.get("/me", authMiddleware, getMe);
+router.delete("/delete", authMiddleware, deleteUser);
 
 export default router;
+
+// const router = express.Router();
+
+// router.post("/register", (req: Request, res: Response) => {
+//   register(req, res).catch((error) => {
+//     console.error("Ошибка в маршруте регистрации:", error);
+//     res.status(500).json({ message: "Внутренняя ошибка сервера" });
+//   });
+// });
+
+// router.post("/login", (req: Request, res: Response) => {
+//   login(req, res).catch((error) => {
+//     console.error("Ошибка в маршруте логина:", error);
+//     res.status(500).json({ message: "Внутренняя ошибка сервера" });
+//   });
+// });
+
+// router.get("/me", authMiddleware, (req: Request, res: Response) => {
+//   getMe(req, res).catch((error) => {
+//     console.error("Ошибка в маршруте getMe:", error);
+//     res.status(500).json({ message: "Внутренняя ошибка сервера" });
+//   });
+// });
+
+// router.delete("/delete", authMiddleware, (req: Request, res: Response) => {
+//   deleteUser(req, res).catch((error) => {
+//     console.error("Ошибка в маршруте удаления пользователя:", error);
+//     res.status(500).json({ message: "Внутренняя ошибка сервера" });
+//   });
+// });
+
+// export default router;

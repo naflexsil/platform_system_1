@@ -28,14 +28,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { login, password } = req.body;
-
     const user = await User.findOne({ login });
 
     if (!user) {
       res.status(400).json({ message: "Пользователь не найден" });
       return;
     }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -59,7 +57,6 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({ message: "Неавторизованный" });
       return;
     }
-
     const user = await User.findById(req.user.userId).select("-password");
 
     if (!user) {
@@ -84,9 +81,13 @@ export const deleteUser = async (
       res.status(401).json({ message: "Неавторизованный" });
       return;
     }
-
     const { userId } = req.user;
 
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: "Пользователь не найден" });
+      return;
+    }
     await User.findByIdAndDelete(userId);
 
     res.status(200).json({ message: "Пользователь успешно удален" });
