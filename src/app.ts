@@ -7,7 +7,7 @@ import pingRoutes from "../src/routes/pingRoutes";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 6000;
 
 app.use(express.json());
 
