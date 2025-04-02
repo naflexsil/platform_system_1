@@ -3,7 +3,7 @@ import User from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, login, password, role } = req.body;
 
@@ -25,7 +25,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { login, password } = req.body;
     const user = await User.findOne({ login });
@@ -51,7 +51,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const getMe = async (req: Request, res: Response): Promise<void> => {
+export const getMe = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       res.status(401).json({ message: "Неавторизованный" });
@@ -72,10 +72,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const deleteUser = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       res.status(401).json({ message: "Неавторизованный" });
