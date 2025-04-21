@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
+import User from "../models/user";
 
 interface JwtPayload {
   userId: string;
@@ -10,7 +11,7 @@ export const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,
-): void => {
+) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
@@ -25,4 +26,21 @@ export const authMiddleware = (
   } catch {
     res.status(403).json({ message: "Неверный токен" });
   }
+};
+
+export const roleMiddleware = (roles: ("student" | "teacher")[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      res.status(401).json({ message: "Неавторизованный" });
+      return;
+    }
+
+    const user = await User.findById(req.user.userId);
+    if (!user || !roles.includes(user.role)) {
+      void res.status(403).json({ message: "Доступ запрещен" });
+      return;
+    }
+
+    next();
+  };
 };

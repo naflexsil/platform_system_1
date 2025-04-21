@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "../src/routes/authRoutes";
 import pingRoutes from "../src/routes/pingRoutes";
 import protectedRoutes from "../src/routes/protectedRoutes";
+import courseRoutes from "../src/routes/courseRoutes";
 
 dotenv.config();
 
@@ -15,8 +16,11 @@ app.use(express.json());
 connectDB();
 
 app.use("/api/auth", authRoutes);
-app.use("/api", pingRoutes);
-app.use("/api", protectedRoutes);
+app.use("/api/ping", pingRoutes);
+
+app.use("/api/protected", protectedRoutes);
+
+app.use("/api/courses", courseRoutes);
 
 app.listen(PORT, () => {
   console.log(`сервер работает на: http://localhost:${PORT}`);
