@@ -5,6 +5,7 @@ declare global {
     interface Request {
       user?: {
         userId: Types.ObjectId;
+        role?: IUser["role"];
       };
     }
   }

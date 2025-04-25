@@ -12,6 +12,7 @@ export interface ICourse extends Document {
   published: boolean;
   author: mongoose.Types.ObjectId;
   createdAt: Date;
+  tags: string[];
 }
 
 const CourseSchema: Schema<ICourse> = new Schema<ICourse>({
@@ -30,6 +31,7 @@ const CourseSchema: Schema<ICourse> = new Schema<ICourse>({
   published: { type: Boolean, default: false },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },
+  tags: [{ type: String }],
 });
 
 CourseSchema.pre<ICourse>("save", function (next) {
