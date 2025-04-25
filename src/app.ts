@@ -1,6 +1,7 @@
 import express from "express";
-import { connectDB } from "../src/config/db";
+import path from "path";
 import dotenv from "dotenv";
+import { connectDB } from "../src/config/db";
 import authRoutes from "../src/routes/authRoutes";
 import pingRoutes from "../src/routes/pingRoutes";
 import protectedRoutes from "../src/routes/protectedRoutes";
@@ -26,8 +27,11 @@ app.use("/api/courses", courseRoutes);
 
 app.use("/api/users", userRoutes);
 
-app.use(express.static("public"));
 app.use("/upload", uploadRoutes);
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "..", "public", "processedImages")),
+);
 
 app.listen(PORT, () => {
   console.log(`сервер работает на: http://localhost:${PORT}`);

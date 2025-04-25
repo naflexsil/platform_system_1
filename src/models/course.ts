@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
 import slugify from "slugify";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICourse extends Document {
   title: string;

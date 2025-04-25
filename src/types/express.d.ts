@@ -4,7 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: {
-        userId: Types.ObjectId;
+        user?: { userId: Types.ObjectId };
         role?: IUser["role"];
       };
     }

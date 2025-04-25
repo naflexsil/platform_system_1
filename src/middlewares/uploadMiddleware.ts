@@ -1,20 +1,14 @@
-import multer, { StorageEngine } from "multer";
 import path from "path";
-import { Request, Response } from "express";
-import sharp from "sharp";
 import fs from "fs";
-
-const ensureDirExists = (dir: string) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-};
+import sharp from "sharp";
+import { RequestHandler } from "express";
+import multer, { StorageEngine } from "multer";
 
 const storage: StorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dest = "uploads/images";
-    ensureDirExists(dest);
-    cb(null, dest);
+    const tempDir = path.join(__dirname, "..", "public", "tempUploads");
+    ensureDirExists(tempDir);
+    cb(null, tempDir);
   },
   filename: (req, file, cb) => {
     const name = Date.now() + "-" + file.originalname;
@@ -22,11 +16,17 @@ const storage: StorageEngine = multer.diskStorage({
   },
 });
 
+function ensureDirExists(dirPath: string) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+}
+
 const upload = multer({ storage });
 export default upload;
 
-export const processImage = async (req: Request, res: Response) => {
-  const reqFile = req as Request & { file: Express.Multer.File };
+export const processImage: RequestHandler = async (req, res, next) => {
+  const reqFile = req as unknown as Request & { file?: Express.Multer.File };
 
   try {
     if (!reqFile.file) {
@@ -35,25 +35,36 @@ export const processImage = async (req: Request, res: Response) => {
     }
 
     const inputPath = reqFile.file.path;
-    const outputPath = path.join("uploads/processed", reqFile.file.filename);
-    const watermarkPath = path.join("public", "watermark.png");
+    const outputDir = path.join(__dirname, "..", "public", "processedImages");
+    ensureDirExists(outputDir);
+    const outputPath = path.join(outputDir, reqFile.file.filename);
 
-    const image = sharp(inputPath)
-      .resize({ width: 1080 })
-      .jpeg({ quality: 80 });
+    const watermarkPath = path.join(__dirname, "..", "public", "watermark.png");
 
     const compositeOptions = fs.existsSync(watermarkPath)
-      ? [{ input: watermarkPath, gravity: "southeast", opacity: 0.5 }]
+      ? [{ input: watermarkPath, gravity: "southeast" }]
       : [];
 
-    await image.composite(compositeOptions).toFile(outputPath);
+    await sharp(inputPath)
+      .resize({ width: 1080 })
+      .composite(compositeOptions)
+      .jpeg({ quality: 80 })
+      .toFile(outputPath);
+
+    setTimeout(() => {
+      try {
+        fs.unlinkSync(inputPath);
+      } catch (err) {
+        console.error("Ошибка при удалении файла:", err);
+      }
+    }, 100);
 
     res.status(200).json({
       message: "Изображение загружено и обработано",
-      path: outputPath,
+      imageUrl: `/processedImages/${reqFile.file.filename}`,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Ошибка обработки:", error);
     res.status(500).json({ message: "Ошибка обработки изображения" });
   }
 };

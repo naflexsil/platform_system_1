@@ -1,6 +1,6 @@
-import Course from "../models/course";
-import { Request, Response, NextFunction } from "express";
 import slugify from "slugify";
+import { Request, Response, NextFunction } from "express";
+import Course from "../models/course";
 
 export const getAllCourses = async (
   req: Request,
@@ -56,7 +56,10 @@ export const createCourse = async (
   next: NextFunction,
 ) => {
   try {
-    const { title, description, price, image, category, level } = req.body;
+    const { title, description, price, image, category, level, tags } =
+      req.body;
+
+    const uniqueTags = Array.isArray(tags) ? [...new Set(tags)] : [];
 
     const newCourse = new Course({
       title,
@@ -65,6 +68,7 @@ export const createCourse = async (
       image,
       category,
       level,
+      tags: uniqueTags,
       author: req.user!.userId,
     });
 
@@ -89,6 +93,10 @@ export const updateCourse = async (
 
     if (req.body.title && req.body.title !== course.title) {
       req.body.slug = slugify(req.body.title, { lower: true });
+    }
+
+    if (req.body.tags && Array.isArray(req.body.tags)) {
+      req.body.tags = [...new Set(req.body.tags)];
     }
 
     Object.assign(course, req.body);
