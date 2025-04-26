@@ -1,13 +1,8 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import { connectDB } from "../src/config/db";
-import authRoutes from "../src/routes/authRoutes";
-import pingRoutes from "../src/routes/pingRoutes";
-import protectedRoutes from "../src/routes/protectedRoutes";
-import courseRoutes from "../src/routes/courseRoutes";
-import userRoutes from "./routes/userRoutes";
-import uploadRoutes from "./routes/uploadRoutes";
+import { connectDB } from "./config/db";
+import { routes } from "./consts/routes";
 
 dotenv.config();
 
@@ -18,16 +13,10 @@ app.use(express.json());
 
 connectDB();
 
-app.use("/api/auth", authRoutes);
-app.use("/api/ping", pingRoutes);
+routes.forEach(({ path, router }) => {
+  app.use(path, router);
+});
 
-app.use("/api/protected", protectedRoutes);
-
-app.use("/api/courses", courseRoutes);
-
-app.use("/api/users", userRoutes);
-
-app.use("/upload", uploadRoutes);
 app.use(
   "/images",
   express.static(path.join(__dirname, "..", "public", "processedImages")),

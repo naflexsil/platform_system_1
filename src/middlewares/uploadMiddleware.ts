@@ -1,10 +1,11 @@
 import path from "path";
 import fs from "fs";
+import { promises as fsp } from "fs";
 import sharp from "sharp";
 import { RequestHandler } from "express";
-import multer, { StorageEngine } from "multer";
+import multer from "multer";
 
-const storage: StorageEngine = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const tempDir = path.join(__dirname, "..", "public", "tempUploads");
     ensureDirExists(tempDir);
@@ -51,13 +52,7 @@ export const processImage: RequestHandler = async (req, res, next) => {
       .jpeg({ quality: 80 })
       .toFile(outputPath);
 
-    setTimeout(() => {
-      try {
-        fs.unlinkSync(inputPath);
-      } catch (err) {
-        console.error("Ошибка при удалении файла:", err);
-      }
-    }, 100);
+    await fsp.unlink(inputPath);
 
     res.status(200).json({
       message: "Изображение загружено и обработано",

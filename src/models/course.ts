@@ -1,5 +1,6 @@
 import slugify from "slugify";
 import mongoose, { Schema, Document } from "mongoose";
+import { CourseLevel } from "../models/types";
 
 export interface ICourse extends Document {
   title: string;
@@ -8,7 +9,7 @@ export interface ICourse extends Document {
   price: number;
   image: string;
   category: string;
-  level: "beginner" | "intermediate" | "advanced";
+  level: CourseLevel;
   published: boolean;
   author: mongoose.Types.ObjectId;
   createdAt: Date;
