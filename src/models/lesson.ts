@@ -13,7 +13,7 @@ const lessonSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: true,
+      required: false,
     },
     videoUrl: {
       type: String,
@@ -21,7 +21,7 @@ const lessonSchema = new mongoose.Schema(
     },
     order: {
       type: Number,
-      required: true,
+      required: false,
     },
     quiz: {
       type: mongoose.Schema.Types.ObjectId,

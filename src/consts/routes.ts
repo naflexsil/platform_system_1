@@ -4,6 +4,8 @@ import protectedRoutes from "../routes/protectedRoutes";
 import courseRoutes from "../routes/courseRoutes";
 import userRoutes from "../routes/userRoutes";
 import uploadRoutes from "../routes/uploadRoutes";
+import lessonRoutes from "../routes/lessonRoutes";
+import commentRoutes from "../routes/commentRoutes";
 
 export const routes = [
   { path: "/api/auth", router: authRoutes },
@@ -12,4 +14,6 @@ export const routes = [
   { path: "/api/courses", router: courseRoutes },
   { path: "/api/users", router: userRoutes },
   { path: "/upload", router: uploadRoutes },
+  { path: "/api/lessons", router: lessonRoutes },
+  { path: "/api/comments", router: commentRoutes },
 ];

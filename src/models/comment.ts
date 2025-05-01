@@ -16,6 +16,11 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    text: {
+      type: String,
+      required: true,
+      maxlength: 255,
+    },
   },
   { timestamps: true },
 );
