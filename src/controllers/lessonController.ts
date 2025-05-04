@@ -31,3 +31,29 @@ export const getLessonsByCourse = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getLessonById = async (req: Request, res: Response) => {
+  try {
+    const lesson = await Lesson.findById(req.params.id);
+    if (!lesson) {
+      res.status(404).json({ message: "Урок не найден" });
+      return;
+    }
+    res.json(lesson);
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при получении урока", error });
+  }
+};
+
+export const deleteLesson = async (req: Request, res: Response) => {
+  try {
+    const lesson = await Lesson.findByIdAndDelete(req.params.id);
+    if (!lesson) {
+      res.status(404).json({ message: "Урок не найден" });
+      return;
+    }
+    res.json({ message: "Урок удален" });
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка при удалении урока", error });
+  }
+};

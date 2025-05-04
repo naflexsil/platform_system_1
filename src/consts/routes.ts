@@ -11,9 +11,12 @@ export const routes = [
   { path: "/api/auth", router: authRoutes },
   { path: "/api/ping", router: pingRoutes },
   { path: "/api/protected", router: protectedRoutes },
+
   { path: "/api/courses", router: courseRoutes },
+
   { path: "/api/users", router: userRoutes },
   { path: "/upload", router: uploadRoutes },
+
   { path: "/api/lessons", router: lessonRoutes },
   { path: "/api/comments", router: commentRoutes },
 ];
