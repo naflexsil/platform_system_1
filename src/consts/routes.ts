@@ -6,6 +6,7 @@ import userRoutes from "../routes/userRoutes";
 import uploadRoutes from "../routes/uploadRoutes";
 import lessonRoutes from "../routes/lessonRoutes";
 import commentRoutes from "../routes/commentRoutes";
+import enrollmentRoutes from "../routes/enrollmentRoutes";
 
 export const routes = [
   { path: "/api/auth", router: authRoutes },
@@ -19,4 +20,6 @@ export const routes = [
 
   { path: "/api/lessons", router: lessonRoutes },
   { path: "/api/comments", router: commentRoutes },
+
+  { path: "/api/enrollments", router: enrollmentRoutes },
 ];
