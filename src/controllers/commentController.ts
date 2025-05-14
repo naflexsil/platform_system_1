@@ -1,8 +1,9 @@
+import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import Comment from "../models/comment";
 
-export const createComment = async (req: Request, res: Response) => {
-  try {
+export const createComment = asyncHandler(
+  async (req: Request, res: Response) => {
     const { lessonId } = req.params;
     const { text } = req.body;
     const author = req.user!.userId;
@@ -11,36 +12,30 @@ export const createComment = async (req: Request, res: Response) => {
     await comment.save();
 
     res.status(201).json(comment);
-  } catch (err: unknown) {
-    const error = err as Error;
-    res.status(500).json({ error: error.message });
-  }
-};
+  },
+);
 
-export const getCommentsForLesson = async (req: Request, res: Response) => {
-  try {
+export const getCommentsForLesson = asyncHandler(
+  async (req: Request, res: Response) => {
     const comments = await Comment.find({ lesson: req.params.lessonId })
       .populate("author", "name")
       .sort({ createdAt: -1 });
 
     res.json(comments);
-  } catch (err: unknown) {
-    const error = err as Error;
-    res.status(500).json({ error: error.message });
-  }
-};
+  },
+);
 
-export const updateComment = async (req: Request, res: Response) => {
-  try {
+export const updateComment = asyncHandler(
+  async (req: Request, res: Response) => {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
-      res.status(404).json({ message: "Комментарий не найден" });
-      return;
+      res.status(404);
+      throw new Error("Комментарий не найден");
     }
 
     if (comment.author.toString() !== req.user!.userId.toString()) {
-      res.status(403).json({ message: "Нет доступа для редактирования" });
-      return;
+      res.status(403);
+      throw new Error("Нет доступа для редактирования");
     }
 
     if (typeof req.body.text === "string" && req.body.text.trim()) {
@@ -49,29 +44,23 @@ export const updateComment = async (req: Request, res: Response) => {
 
     const updated = await comment.save();
     res.json(updated);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Ошибка при обновлении комментария", error });
-  }
-};
+  },
+);
 
-export const deleteComment = async (req: Request, res: Response) => {
-  try {
+export const deleteComment = asyncHandler(
+  async (req: Request, res: Response) => {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
-      res.status(404).json({ message: "Комментарий не найден" });
-      return;
+      res.status(404);
+      throw new Error("Комментарий не найден");
     }
 
     if (comment.author.toString() !== req.user!.userId.toString()) {
-      res.status(403).json({ message: "Нет доступа для редактирования" });
-      return;
+      res.status(403);
+      throw new Error("Нет доступа для удаления");
     }
 
     await comment.deleteOne();
     res.json({ message: "Комментарий удален" });
-  } catch (error) {
-    res.status(500).json({ message: "Ошибка при удалении комментария", error });
-  }
-};
+  },
+);

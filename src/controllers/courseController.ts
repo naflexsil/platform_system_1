@@ -1,13 +1,10 @@
 import slugify from "slugify";
-import { Request, Response, NextFunction } from "express";
+import asyncHandler from "express-async-handler";
+import { Request, Response } from "express";
 import Course from "../models/course";
 
-export const getAllCourses = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const getAllCourses = asyncHandler(
+  async (req: Request, res: Response) => {
     const {
       page = 1,
       limit = 10,
@@ -28,34 +25,23 @@ export const getAllCourses = async (
       .limit(+limit);
 
     res.json(courses);
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
 
-export const getCourseById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const getCourseById = asyncHandler(
+  async (req: Request, res: Response) => {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      res.status(404).json({ error: "Курс не найден" });
-      return;
+      res.status(404);
+      throw new Error("Курс не найден");
     }
-    res.json(course);
-  } catch (error) {
-    next(error);
-  }
-};
 
-export const createCourse = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+    res.json(course);
+  },
+);
+
+export const createCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const { title, description, price, image, category, level, tags } =
       req.body;
 
@@ -74,21 +60,15 @@ export const createCourse = async (
 
     await newCourse.save();
     res.status(201).json(newCourse);
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
 
-export const updateCourse = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const updateCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      res.status(404).json({ error: "Курс не найден" });
-      return;
+      res.status(404);
+      throw new Error("Курс не найден");
     }
 
     if (req.body.title && req.body.title !== course.title) {
@@ -103,24 +83,17 @@ export const updateCourse = async (
     await course.save();
 
     res.json(course);
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
 
-export const deleteCourse = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const deleteCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const course = await Course.findByIdAndDelete(req.params.id);
     if (!course) {
-      res.status(404).json({ error: "Курс не найден" });
-      return;
+      res.status(404);
+      throw new Error("Курс не найден");
     }
+
     res.json({ message: "Курс удалён" });
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);

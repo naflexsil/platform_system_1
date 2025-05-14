@@ -1,8 +1,9 @@
+import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import Lesson from "../models/lesson";
 
-export const createLesson = async (req: Request, res: Response) => {
-  try {
+export const createLesson = asyncHandler(
+  async (req: Request, res: Response) => {
     const { course, title, content, videoUrl, order, quiz } = req.body;
     const lesson = new Lesson({
       course,
@@ -14,46 +15,38 @@ export const createLesson = async (req: Request, res: Response) => {
     });
     await lesson.save();
     res.status(201).json(lesson);
-  } catch (err: unknown) {
-    const error = err as Error;
-    res.status(500).json({ error: error.message });
-  }
-};
+  },
+);
 
-export const getLessonsByCourse = async (req: Request, res: Response) => {
-  try {
+export const getLessonsByCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const lessons = await Lesson.find({ course: req.params.courseId }).sort(
       "order",
     );
     res.json(lessons);
-  } catch (err: unknown) {
-    const error = err as Error;
-    res.status(500).json({ error: error.message });
-  }
-};
+  },
+);
 
-export const getLessonById = async (req: Request, res: Response) => {
-  try {
+export const getLessonById = asyncHandler(
+  async (req: Request, res: Response) => {
     const lesson = await Lesson.findById(req.params.id);
     if (!lesson) {
-      res.status(404).json({ message: "Урок не найден" });
-      return;
+      res.status(404);
+      throw new Error("Урок не найден");
     }
-    res.json(lesson);
-  } catch (error) {
-    res.status(500).json({ message: "Ошибка при получении урока", error });
-  }
-};
 
-export const deleteLesson = async (req: Request, res: Response) => {
-  try {
+    res.json(lesson);
+  },
+);
+
+export const deleteLesson = asyncHandler(
+  async (req: Request, res: Response) => {
     const lesson = await Lesson.findByIdAndDelete(req.params.id);
     if (!lesson) {
-      res.status(404).json({ message: "Урок не найден" });
-      return;
+      res.status(404);
+      throw new Error("Урок не найден");
     }
-    res.json({ message: "Урок удален" });
-  } catch (error) {
-    res.status(500).json({ message: "Ошибка при удалении урока", error });
-  }
-};
+
+    res.json({ message: "Урок удалён" });
+  },
+);
