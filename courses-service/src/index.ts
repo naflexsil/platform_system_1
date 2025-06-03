@@ -1,7 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
+import { connectDB } from "./config/db";
 import { routes } from "./consts/routes";
+import { consumeRabbit } from "./utils/rabbitmq";
 
 dotenv.config();
 
@@ -19,6 +21,18 @@ app.use(
   express.static(path.join(__dirname, "..", "public", "uploads", "images")),
 );
 
-app.listen(PORT, () => {
-  console.log(`courses-service работает на http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    await consumeRabbit();
+
+    app.listen(PORT, () => {
+      console.log(`courses-service работает на http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Ошибка при запуске сервиса:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

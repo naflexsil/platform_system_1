@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db";
 import { routes } from "./consts/routes";
+import { connectRabbitMQ } from "./utils/rabbitmq";
 
 dotenv.config();
 
@@ -10,8 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 4002;
 
 app.use(express.json());
-
-connectDB();
 
 routes.forEach(({ path, router }) => {
   app.use(path, router);
@@ -22,6 +21,18 @@ app.use(
   express.static(path.join(__dirname, "..", "public", "processedImages")),
 );
 
-app.listen(PORT, () => {
-  console.log(`user-service работает на http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    await connectRabbitMQ();
+
+    app.listen(PORT, () => {
+      console.log(`user-service работает на http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Ошибка при запуске сервиса:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
