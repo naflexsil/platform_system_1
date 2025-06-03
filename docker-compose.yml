@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - backend
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "4001:4001"
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - backend
+
+  courses-service:
+    build: ./courses-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - backend
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "6000:6000"
+    depends_on:
+      - user-service
+      - courses-service
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
