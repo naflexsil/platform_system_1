@@ -3,15 +3,15 @@ import amqp from "amqplib";
 let channel: amqp.Channel;
 
 export const connectRabbitMQ = async () => {
-  const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
+  const url = process.env.RABBITMQ_URL || "amqp://rabbitmq:5672";
   const maxRetries = 10;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(
-        "Попытка подключения к RabbitMQ (user-service), попытка ${attempt}",
+        `Попытка подключения к RabbitMQ (user-service), попытка ${attempt}`,
       );
-      const connection = await amqp.connect(RABBITMQ_URL);
+      const connection = await amqp.connect(url);
       channel = await connection.createChannel();
       await channel.assertQueue("enrollment_queue");
       console.log("RabbitMQ connected (user-service)");
@@ -30,7 +30,7 @@ export const connectRabbitMQ = async () => {
 
 export const sendToQueue = async (data: any) => {
   if (!channel) {
-    throw new Error("Channel not initialized");
+    throw new Error("RabbitMQ channel не инициализирован");
   }
   channel.sendToQueue("enrollment_queue", Buffer.from(JSON.stringify(data)));
 };

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db";
 import { routes } from "./consts/routes";
-import { connectRabbitMQ } from "./utils/rabbitmq";
+import { connectRabbitMQ } from "./rabbitMQ/publisher";
 
 dotenv.config();
 

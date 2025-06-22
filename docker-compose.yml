@@ -19,6 +19,11 @@ services:
       - "15672:15672"
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   user-service:
     build: ./user-service
@@ -29,10 +34,10 @@ services:
       - PORT=4002
       - MONGO_URI=mongodb://mongo:27017/userdb
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     depends_on:
-      - mongo
       - rabbitmq
+      - mongo
     networks:
       - app-network
 
@@ -45,10 +50,10 @@ services:
       - PORT=4001
       - MONGO_URI=mongodb://mongo:27017/coursedb
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
     depends_on:
-      - mongo
       - rabbitmq
+      - mongo
     networks:
       - app-network
 

@@ -2,7 +2,7 @@ import amqp from "amqplib";
 import { Enrollment } from "../models/enrollment";
 
 export const startConsumer = async () => {
-  const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
+  const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://rabbitmq:5672";
   const maxRetries = 10;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -12,9 +12,9 @@ export const startConsumer = async () => {
       );
       const connection = await amqp.connect(RABBITMQ_URL);
       const channel = await connection.createChannel();
-      await channel.assertQueue("enrollmentQueue");
+      await channel.assertQueue("enrollment_queue");
 
-      channel.consume("enrollmentQueue", async (msg) => {
+      channel.consume("enrollment_queue", async (msg) => {
         if (msg !== null) {
           const data = JSON.parse(msg.content.toString());
           await Enrollment.create(data);
