@@ -6,8 +6,6 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY src ./src
 
-RUN apt-get update && apt-get install -y netcat-openbsd
-
 RUN npx yarn install
 
 EXPOSE 4001

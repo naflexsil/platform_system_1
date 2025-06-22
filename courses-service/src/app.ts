@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db";
 import { routes } from "./consts/routes";
-import { consumeRabbit } from "./utils/rabbitmq";
+import { startConsumer } from "./rabbitmq/consumer";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.use(
 const startServer = async () => {
   try {
     await connectDB();
-    await consumeRabbit();
+    await startConsumer();
 
     app.listen(PORT, () => {
       console.log(`courses-service работает на http://localhost:${PORT}`);

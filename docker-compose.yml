@@ -28,9 +28,8 @@ services:
     environment:
       - PORT=4002
       - MONGO_URI=mongodb://mongo:27017/userdb
-      - RABBITMQ_URL=amqp://rabbitmq
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://rabbitmq:5672
     depends_on:
       - mongo
       - rabbitmq
@@ -45,9 +44,8 @@ services:
     environment:
       - PORT=4001
       - MONGO_URI=mongodb://mongo:27017/coursedb
-      - RABBITMQ_URL=amqp://rabbitmq
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://rabbitmq:5672
     depends_on:
       - mongo
       - rabbitmq
