@@ -12,9 +12,20 @@ export const startConsumer = async () => {
       );
       const connection = await amqp.connect(RABBITMQ_URL);
       const channel = await connection.createChannel();
-      await channel.assertQueue("enrollment_queue");
 
-      channel.consume("enrollment_queue", async (msg) => {
+      await channel.assertExchange("enrollment_exchange", "direct", {
+        durable: true,
+      });
+
+      await channel.assertQueue("courses_enrollment_queue", { durable: true });
+
+      await channel.bindQueue(
+        "courses_enrollment_queue",
+        "enrollment_exchange",
+        "enroll",
+      );
+
+      channel.consume("courses_enrollment_queue", async (msg) => {
         if (msg !== null) {
           const data = JSON.parse(msg.content.toString());
           await Enrollment.create(data);
@@ -22,7 +33,9 @@ export const startConsumer = async () => {
         }
       });
 
-      console.log("Consumer подключён к RabbitMQ и слушает очередь");
+      console.log(
+        "Consumer подключён к RabbitMQ и слушает очередь courses_enrollment_queue",
+      );
       return;
     } catch (error) {
       const err = error as Error;
