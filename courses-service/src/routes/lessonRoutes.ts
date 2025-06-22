@@ -4,7 +4,7 @@ import {
   getLessonsByCourse,
   getLessonById,
   deleteLesson,
-} from "../../../courses-service/src/controllers/lessonController";
+} from "../controllers/lessonController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();

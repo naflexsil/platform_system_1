@@ -1,14 +1,15 @@
-FROM node:24.2.0-slim
+FROM node:24.0-slim
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+COPY tsconfig.json ./
+COPY src ./src
 
-COPY . .
+RUN apt-get update && apt-get install -y netcat-openbsd
 
-RUN npm run build
+RUN npx yarn install
 
 EXPOSE 4001
 
-CMD ["npm", "start"]
+CMD ["npx", "yarn", "run", "dev"]

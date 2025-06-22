@@ -8,6 +8,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - app-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -15,6 +17,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - app-network
 
   user-service:
     build: ./user-service
@@ -25,9 +29,13 @@ services:
       - PORT=4002
       - MONGO_URI=mongodb://mongo:27017/userdb
       - RABBITMQ_URL=amqp://rabbitmq
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
     depends_on:
       - mongo
       - rabbitmq
+    networks:
+      - app-network
 
   courses-service:
     build: ./courses-service
@@ -38,9 +46,13 @@ services:
       - PORT=4001
       - MONGO_URI=mongodb://mongo:27017/coursedb
       - RABBITMQ_URL=amqp://rabbitmq
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
     depends_on:
       - mongo
       - rabbitmq
+    networks:
+      - app-network
 
   api-gateway:
     build: ./api-gateway
@@ -50,6 +62,12 @@ services:
     depends_on:
       - user-service
       - courses-service
+    networks:
+      - app-network
 
 volumes:
   mongo_data:
+
+networks:
+  app-network:
+    driver: bridge

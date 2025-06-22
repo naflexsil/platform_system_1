@@ -6,7 +6,7 @@ import {
   getCourseProgress,
   getEnrolledCount,
   uncompleteLesson,
-} from "../../../courses-service/src/controllers/enrollmentController";
+} from "../controllers/enrollmentController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
