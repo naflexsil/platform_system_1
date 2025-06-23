@@ -4,6 +4,7 @@ import path from "path";
 import { connectDB } from "./config/db";
 import { routes } from "./consts/routes";
 import { connectRabbitMQ } from "./rabbitMQ/publisher";
+import { startUserConsumer } from "./rabbitMQ/consumer";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ const startServer = async () => {
   try {
     await connectDB();
     await connectRabbitMQ();
+    await startUserConsumer();
 
     app.listen(PORT, () => {
       console.log(`user-service работает на http://localhost:${PORT}`);

@@ -36,8 +36,10 @@ export const sendToQueue = async (data: any) => {
   if (!channel) throw new Error("RabbitMQ channel не инициализирован");
   return channel.publish(
     "enrollment_exchange",
-    "enroll",
+    "user.enroll",
     Buffer.from(JSON.stringify(data)),
-    { persistent: true },
+    {
+      persistent: true,
+    },
   );
 };

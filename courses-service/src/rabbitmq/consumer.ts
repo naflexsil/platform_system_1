@@ -22,7 +22,7 @@ export const startConsumer = async () => {
       await channel.bindQueue(
         "courses_enrollment_queue",
         "enrollment_exchange",
-        "enroll",
+        "course.enroll",
       );
 
       channel.consume("courses_enrollment_queue", async (msg) => {
