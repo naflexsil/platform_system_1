@@ -18,14 +18,6 @@ export const connectRabbitMQ = async () => {
         durable: true,
       });
 
-      await channel.assertQueue("user_enrollment_queue", { durable: true });
-
-      await channel.bindQueue(
-        "user_enrollment_queue",
-        "enrollment_exchange",
-        "enroll",
-      );
-
       console.log("RabbitMQ connected (user-service)");
       return;
     } catch (error) {

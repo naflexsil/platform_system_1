@@ -14,12 +14,6 @@ export const connectRabbitMQ = async () => {
       await channel.assertExchange("enrollment_exchange", "direct", {
         durable: true,
       });
-      await channel.assertQueue("gateway_enrollment_queue", { durable: true });
-      await channel.bindQueue(
-        "gateway_enrollment_queue",
-        "enrollment_exchange",
-        "enroll",
-      );
 
       console.log("RabbitMQ connected (api-gateway)");
       return;
@@ -38,15 +32,4 @@ export const sendToQueue = (data: any) => {
     Buffer.from(JSON.stringify(data)),
     { persistent: true },
   );
-};
-
-export const consumeQueue = (handler: (msg: any) => Promise<void>) => {
-  if (!channel) throw new Error("RabbitMQ channel не инициализирован");
-  channel.consume("gateway_enrollment_queue", async (msg) => {
-    if (msg) {
-      const data = JSON.parse(msg.content.toString());
-      await handler(data);
-      channel.ack(msg);
-    }
-  });
 };
